@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 
+# 默认User Prompt输入
 DEFAULT_TASK = "请检查 inbox，把 a.txt 移动到 archive，然后告诉我整理后的目录变化。"
 WORKSPACE = Path(__file__).resolve().parent / "demo_workspace"
 
@@ -37,7 +38,8 @@ def workspace_path(path: str) -> Path:
     path = path.strip().replace("\\", "/")
     return WORKSPACE if path == "." else WORKSPACE / path.strip("/")
 
-
+# LangChain中的@tool装饰器封装函数作为BaseTool对象，用于tool call
+# """..."""中间为tool description
 @tool
 def list_files(path: str = ".") -> str:
     """List files in the demo workspace."""
@@ -80,7 +82,8 @@ ReAct 的节奏是：观察当前状态 -> 选择一个工具行动 -> 查看工
 
 def main() -> None:
     from langchain.agents import create_agent
-
+    
+    # 从命令行参数中获取User Prompt，没有使用DEFAULT_TASK
     task = " ".join(sys.argv[1:]).strip() or DEFAULT_TASK
     reset_workspace()
 
